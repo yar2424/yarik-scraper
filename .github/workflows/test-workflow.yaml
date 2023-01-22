@@ -1,0 +1,12 @@
+# create github action which print "hello world"
+name: Test workflow
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a one-line script
+        run: echo Hello, world!
