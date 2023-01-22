@@ -60,6 +60,8 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
       scrapperInfo.name
     );
 
+    outputXmlHelper.addMissingFields();
+
     await outputXmlHelper.uploadXMLToS3();
   }
 }

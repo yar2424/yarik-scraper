@@ -115,6 +115,17 @@ export class OutputXmlHelper {
     }
   }
 
+  addMissingFields() {
+    const fieldsArrays = Object.values(this.shopFieldNamesMappings);
+    const fields = fieldsArrays.reduce((acc, cur) => [...acc, ...cur], []);
+    this.xmlItems = this.xmlItems.map((item) => {
+      fields.forEach((fieldName) => {
+        item[fieldName] = item[fieldName] ?? "no link";
+      });
+      return item;
+    });
+  }
+
   generateXmlStringFromXmlItems() {
     const outputXmlJSObject = {
       mobile_parts: {
