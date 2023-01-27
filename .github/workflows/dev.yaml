@@ -1,4 +1,3 @@
-# create github action which print "hello world"
 name: Dev Pipeline
 on:
   push:
@@ -31,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: false
+          push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest-dev
           cache-to: type=gha,mode=max
           cache-from: type=gha
