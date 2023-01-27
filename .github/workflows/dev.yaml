@@ -30,8 +30,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest-dev
+          push: false
+          # tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest-dev
+          tags: just/test:latest-dev
           cache-to: type=gha,mode=max
           cache-from: type=gha
 
