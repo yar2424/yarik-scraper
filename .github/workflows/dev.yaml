@@ -39,9 +39,9 @@ jobs:
         run: docker push ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest-dev
 
       - name: Run ecs task
-        run: > 
-        aws ecs run-task \
-          --cluster YarikScrapper2 \
-          --launch-type FARGATE \
-          --task-definition arn:aws:ecs:eu-central-1:432292721995:task-definition/YarikScrapper2:2 \
-          --network-configuration "awsvpcConfiguration={subnets=[subnet-635af509,subnet-0fe10473,subnet-6f50b923],securityGroups=[sg-fceb3f98],assignPublicIp=ENABLED}"
+        run: >
+          aws ecs run-task \
+            --cluster YarikScrapper2 \
+            --launch-type FARGATE \
+            --task-definition arn:aws:ecs:eu-central-1:432292721995:task-definition/YarikScrapper2:2 \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-635af509,subnet-0fe10473,subnet-6f50b923],securityGroups=[sg-fceb3f98],assignPublicIp=ENABLED}"
