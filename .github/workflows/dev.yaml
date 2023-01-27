@@ -35,8 +35,8 @@ jobs:
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:latest-dev
           cache-to: type=gha,mode=max
           cache-from: type=gha
-      
-      -name: Print all docker images on system
+
+      - name: Print all docker images on system
         run: docker images
 
       - name: Push the image to Amazon ECR
