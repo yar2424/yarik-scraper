@@ -5,7 +5,7 @@ on:
       - feature/*
 jobs:
   build-push:
-    name: Build, push, run
+    name: Build and push docker image
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +44,7 @@ jobs:
     needs: build-push
     steps:
       - name: Run ecs task
-        run: >
+        run: |
           aws ecs run-task \
             --cluster YarikScrapper2 \
             --launch-type FARGATE \
