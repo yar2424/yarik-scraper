@@ -15,5 +15,3 @@ RUN npm i --omit=dev
 COPY --from=ts-compiler /usr/app/out/ ./out/
 
 CMD ["node", "out/main.js"]
-# CMD ["pwd"]
-# CMD ["node", "out/scrappers/testscrapperAllSpares.js"]

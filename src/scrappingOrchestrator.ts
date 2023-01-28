@@ -1,25 +1,8 @@
-import { ScrapperArtMobile } from "./scrappers/scrapperArtMobile.js";
-import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
-import { OutputXmlHelper, Shop } from "./outputXmlHelper.js";
+import { config } from "./config";
 import { InputXmlHelper } from "./crmXmlHelper.js";
-import { ScrapperAfm } from "./scrappers/scrapperAfm.js";
-import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
-import { ScrapperAllSpares } from "./scrappers/scrapperAllSpares.js";
-import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
+import { OutputXmlHelper } from "./outputXmlHelper.js";
 
-interface IScrappersInfo {
-  name: Shop;
-  class_: any;
-}
-
-const scrappersInfo: IScrappersInfo[] = [
-  // { name: "AllSpares", class_: ScrapperAllSpares },
-  // { name: "FlatCable", class_: ScrapperFlatCable },
-  // { name: "Uptel", class_: ScrapperUptel },
-  // { name: "Afm", class_: ScrapperAfm },
-  { name: "ArtMobile", class_: ScrapperArtMobile },
-  // { name: "TPlus", class_: ScrapperTPlus },
-];
+const scrappersInfo = config.scrappersToRun;
 
 export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
   const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();

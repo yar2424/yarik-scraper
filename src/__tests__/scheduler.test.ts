@@ -1,8 +1,4 @@
-import {
-  getCategoriesThatShouldRunToday,
-  getSchedule,
-  returnNow,
-} from "../scheduler";
+import { getCategoriesThatShouldRunToday } from "../scheduler";
 
 const mockCategoriesSchedules = [
   {
