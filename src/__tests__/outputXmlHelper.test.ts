@@ -48,3 +48,33 @@ describe("addMissingFields methos tests", () => {
     expect(price_am).toBe("no link");
   });
 });
+
+test("Object fields are being sorted", () => {
+  const outputXmlHelper = new OutputXmlHelper();
+  outputXmlHelper.xmlItems = [
+    {
+      code: "code",
+      name: "name",
+      stock_am: "ok",
+      price_am: "ok",
+      last_updated_am: "ok",
+    },
+    {
+      code: "code",
+      name: "name",
+      stock_am: "ko",
+      price_am: "ko",
+      last_updated_am: "ko",
+    },
+  ];
+  outputXmlHelper.sortFields();
+  console.log(outputXmlHelper.xmlItems);
+  const outputObjectKeys = Object.keys(outputXmlHelper.xmlItems[0]);
+  expect(outputObjectKeys).toEqual([
+    "code",
+    "last_updated_am",
+    "name",
+    "price_am",
+    "stock_am",
+  ]);
+});
