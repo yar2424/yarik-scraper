@@ -2,7 +2,7 @@ name: Dev Pipeline
 on:
   push:
     branches:
-      - feature/*
+      - dev
 jobs:
   build-push:
     name: Build and push docker image
