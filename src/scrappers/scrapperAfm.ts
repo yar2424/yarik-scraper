@@ -20,7 +20,7 @@ export class ScrapperAfm {
 
   getItemsWithValidUrls(): IItemAfm[] {
     return this.items.filter((item) =>
-      item.ssilkaafm.startsWith("https://afm.com.ua")
+      item.ssilkaAFM.startsWith("https://afm.com.ua")
     );
   }
 
@@ -112,10 +112,10 @@ export class ScrapperAfm {
 
   async scrapItem(page: Page, item: IItemAfm) {
     console.log(
-      `Started scrapping item '${item["g:mpn"]}' '${item.ssilkaafm}'`
+      `Started scrapping item '${item["g:mpn"]}' '${item.ssilkaAFM}'`
     );
 
-    await page.goto(item.ssilkaafm);
+    await page.goto(item.ssilkaAFM);
 
     const inStock = await this.isInStock(page);
 

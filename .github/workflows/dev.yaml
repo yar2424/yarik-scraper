@@ -52,7 +52,7 @@ jobs:
       - name: Run ecs task
         run: |
           aws ecs run-task \
-            --cluster YarikScrapper2 \
+            --cluster YarikScrapperDev \
             --launch-type FARGATE \
-            --task-definition arn:aws:ecs:eu-central-1:432292721995:task-definition/YarikScrapper2:2 \
+            --task-definition arn:aws:ecs:eu-central-1:432292721995:task-definition/YarikScrapperDev:1 \
             --network-configuration "awsvpcConfiguration={subnets=[subnet-635af509,subnet-0fe10473,subnet-6f50b923],securityGroups=[sg-fceb3f98],assignPublicIp=ENABLED}"
