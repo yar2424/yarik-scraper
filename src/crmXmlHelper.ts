@@ -105,7 +105,7 @@ export interface IItem {
   "g:mpn": string | number;
   Ssilkaartmobile: string;
   ssilkatekhno33: string;
-  ssilkaafm: string;
+  ssilkaAFM: string;
   ssilkaUptel: string;
   ssilkaFlatCable: string;
   ssilkaAllspares: string;

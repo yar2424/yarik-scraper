@@ -33,7 +33,7 @@ export class OutputXmlHelper {
 
   constructor(
     public xmlS3Bucket = "parser-yarik",
-    public xmlS3Key = "parsing-results/out.xml",
+    public xmlS3Key = "parsing-results/outputXml.xml",
     public xmlItems: IOutputXmlItem[] = []
   ) {
     this.shopFieldNamesMappings = {
@@ -123,6 +123,18 @@ export class OutputXmlHelper {
         item[fieldName] = item[fieldName] ?? "no link";
       });
       return item;
+    });
+  }
+
+  sortFields() {
+    this.xmlItems = this.xmlItems.map((unordered) => {
+      const ordered = Object.keys(unordered)
+        .sort()
+        .reduce((obj, key) => {
+          obj[key] = unordered[key];
+          return obj;
+        }, {});
+      return ordered as IOutputXmlItem;
     });
   }
 
