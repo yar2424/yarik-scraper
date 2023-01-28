@@ -13,11 +13,11 @@ interface IScrappersInfo {
 }
 
 const scrappersInfo: IScrappersInfo[] = [
-  { name: "AllSpares", class_: ScrapperAllSpares },
+  // { name: "AllSpares", class_: ScrapperAllSpares },
   // { name: "FlatCable", class_: ScrapperFlatCable },
   // { name: "Uptel", class_: ScrapperUptel },
   // { name: "Afm", class_: ScrapperAfm },
-  // { name: "ArtMobile", class_: ScrapperArtMobile },
+  { name: "ArtMobile", class_: ScrapperArtMobile },
   // { name: "TPlus", class_: ScrapperTPlus },
 ];
 
