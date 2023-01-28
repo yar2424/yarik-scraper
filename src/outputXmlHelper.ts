@@ -6,14 +6,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { IItem } from "./crmXmlHelper";
-
-export type Shop =
-  | "ArtMobile"
-  | "TPlus"
-  | "Afm"
-  | "Uptel"
-  | "FlatCable"
-  | "AllSpares";
+import { Shop } from "./types";
 
 const s3ClientConfig = {
   region: "eu-central-1",

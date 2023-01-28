@@ -1,19 +1,7 @@
-const categoriesSchedules_ = [
-  // phone screens
-  // {
-  //   categoryId: 54,
-  //   startDate: new Date("2023-01-10"),
-  //   intervalInDays: 1,
-  // },
-  {
-    categoryId: 121,
-    startDate: new Date("2023-01-07"),
-    intervalInDays: 1,
-  },
-];
+import { config } from "./config";
 
 export function getCategoriesThatShouldRunToday(
-  categoriesSchedules = categoriesSchedules_
+  categoriesSchedules = config.schedule
 ) {
   const categoriesToRun: number[] = [];
   const now = Date.now();
@@ -25,12 +13,4 @@ export function getCategoriesThatShouldRunToday(
     }
   }
   return categoriesToRun;
-}
-
-export function returnNow() {
-  return Date.now();
-}
-
-export function getSchedule() {
-  return categoriesSchedules_;
 }
