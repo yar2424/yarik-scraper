@@ -13,6 +13,8 @@ function main() {
     `Will scrap ${categoriesThatShouldRunToday.length} categories today: ${categoriesThatShouldRunToday}`
   );
   runScrappersForCategoriesIds(categoriesThatShouldRunToday);
+  console.log("Finished all scrapping for today");
+  process.exit(0);
 }
 
 main();
