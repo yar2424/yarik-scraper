@@ -1,10 +1,11 @@
 import puppeteer, { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
-import { getBrowser, Retry } from "./utils.js";
+import { Stock } from "../types.js";
+import { getBrowser, RetryScrapperRun } from "./utils.js";
 
 export interface IItemArtMobile extends IItem {
   price_am?: string;
-  stock_am?: "В наличии" | "Нет в наличии";
+  stock_am?: Stock;
   last_updated_am?: string;
 }
 
@@ -20,7 +21,7 @@ export class ScrapperArtMobile {
     );
   }
 
-  @Retry(3, "ArtMobile")
+  @RetryScrapperRun(3, "ArtMobile")
   async runScrapper() {
     const itemsToScrap = this.getItemsWithValidUrls();
 
@@ -91,13 +92,20 @@ export class ScrapperArtMobile {
 
     await page.goto(item.Ssilkaartmobile);
 
-    const inStock = await this.isInStock(page);
+    try {
+      const inStock = await this.isInStock(page);
 
-    const price = inStock ? await this.getPriceFromPage(page) : "-1";
+      const price = inStock ? await this.getPriceFromPage(page) : "-1";
 
-    item.stock_am = inStock ? "В наличии" : "Нет в наличии";
-    item.price_am = price;
-    item.last_updated_am = this.scrappingStartedAt;
+      item.stock_am = inStock ? "В наличии" : "Нет в наличии";
+      item.price_am = price;
+      item.last_updated_am = this.scrappingStartedAt;
+    } catch (e) {
+      console.log(`WARNING Failed to scrap item due to error: ${e}`);
+      item.stock_am = "failed to scrap";
+      item.price_am = "failed to scrap";
+      item.last_updated_am = this.scrappingStartedAt;
+    }
 
     console.log(`Finished scrapping item '${item["g:mpn"]}'`);
 
