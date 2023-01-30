@@ -1,10 +1,11 @@
 import { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
-import { getBrowser, Retry } from "./utils.js";
+import { Stock } from "../types.js";
+import { getBrowser, RetryScrapperRun } from "./utils.js";
 
 export interface IItemUptel extends IItem {
   price_uptel?: string;
-  stock_uptel?: "В наличии" | "Нет в наличии";
+  stock_uptel?: Stock;
   last_updated_uptel?: string;
 }
 
@@ -20,7 +21,7 @@ export class ScrapperUptel {
     );
   }
 
-  @Retry(3, "Uptel")
+  @RetryScrapperRun(3, "Uptel")
   async runScrapper() {
     const itemsToScrap = this.getItemsWithValidUrls();
 
@@ -114,13 +115,20 @@ export class ScrapperUptel {
 
     await page.goto(item.ssilkaUptel);
 
-    const inStock = await this.isInStock(page);
+    try {
+      const inStock = await this.isInStock(page);
 
-    const price = inStock ? await this.getPriceFromPage(page) : "-1";
+      const price = inStock ? await this.getPriceFromPage(page) : "-1";
 
-    item.stock_uptel = inStock ? "В наличии" : "Нет в наличии";
-    item.price_uptel = price;
-    item.last_updated_uptel = this.scrappingStartedAt;
+      item.stock_uptel = inStock ? "В наличии" : "Нет в наличии";
+      item.price_uptel = price;
+      item.last_updated_uptel = this.scrappingStartedAt;
+    } catch (e) {
+      console.log(`WARNING Failed to scrap item due to error: ${e}`);
+      item.stock_uptel = "failed to scrap";
+      item.price_uptel = "failed to scrap";
+      item.last_updated_uptel = this.scrappingStartedAt;
+    }
 
     console.log(`Finished scrapping item '${item["g:mpn"]}'`);
 

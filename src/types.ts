@@ -16,3 +16,5 @@ export interface IScheduleItemp {
   startDate: Date;
   intervalInDays: number;
 }
+
+export type Stock = "В наличии" | "Нет в наличии" | "failed to scrap";

@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 
 import { Shop } from "../types";
 
-export function Retry(maxAttempts: number, scrapperName: Shop) {
+export function RetryScrapperRun(maxAttempts: number, scrapperName: Shop) {
   return function (
     target: Object,
     key: string | symbol,
@@ -37,6 +37,39 @@ export function Retry(maxAttempts: number, scrapperName: Shop) {
         } catch (error) {
           console.log(
             `WARNING Failed to run ${scrapperName} scrapper with following error ${error}`
+          );
+          attempt++;
+        }
+      }
+    };
+    return descriptor;
+  };
+}
+export function RetryItemScrap(maxAttempts: number) {
+  return function (
+    target: Object,
+    key: string | symbol,
+    descriptor: PropertyDescriptor
+  ) {
+    const originalFunction = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+      let attempt = 1;
+      while (true) {
+        if (attempt > 1 && attempt <= maxAttempts) {
+          console.log(`WARNING Retrying to scrap item.`);
+        } else if (attempt > maxAttempts) {
+          console.log(
+            `WARNING Failed to scrap item. Tried ${attempt - 1} times.`
+          );
+          const originalItem = args[1];
+          return {};
+        }
+        try {
+          const result = await originalFunction.apply(this, args);
+          return result;
+        } catch (error) {
+          console.log(
+            `WARNING Failed to scrap item due to following error ${error}`
           );
           attempt++;
         }

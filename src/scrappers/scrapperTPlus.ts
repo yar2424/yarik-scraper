@@ -5,11 +5,12 @@ import { IItem } from "../crmXmlHelper.js";
 
 import { executablePath } from "puppeteer";
 import { RestoreRequestType } from "@aws-sdk/client-s3";
-import { getBrowser, Retry } from "./utils.js";
+import { getBrowser, RetryScrapperRun } from "./utils.js";
+import { Stock } from "../types.js";
 
 export interface IItemTPlus extends IItem {
   price_tp?: string;
-  stock_tp?: "В наличии" | "Нет в наличии";
+  stock_tp?: Stock;
   last_updated_tp?: string;
 }
 
@@ -25,7 +26,7 @@ export class ScrapperTPlus {
     );
   }
 
-  @Retry(3, "TPlus")
+  @RetryScrapperRun(3, "TPlus")
   async runScrapper() {
     const itemsToScrap = this.getItemsWithValidUrls();
 
@@ -106,13 +107,20 @@ export class ScrapperTPlus {
 
     await page.goto(item.ssilkatekhno33);
 
-    const inStock = await this.isInStock(page);
+    try {
+      const inStock = await this.isInStock(page);
 
-    const price = inStock ? await this.getPriceFromPage(page) : "-1";
+      const price = inStock ? await this.getPriceFromPage(page) : "-1";
 
-    item.stock_tp = inStock ? "В наличии" : "Нет в наличии";
-    item.price_tp = price;
-    item.last_updated_tp = this.scrappingStartedAt;
+      item.stock_tp = inStock ? "В наличии" : "Нет в наличии";
+      item.price_tp = price;
+      item.last_updated_tp = this.scrappingStartedAt;
+    } catch (e) {
+      console.log(`WARNING Failed to scrap item due to error: ${e}`);
+      item.stock_tp = "failed to scrap";
+      item.price_tp = "failed to scrap";
+      item.last_updated_tp = this.scrappingStartedAt;
+    }
 
     console.log(`Finished scrapping item '${item["g:mpn"]}'`);
 

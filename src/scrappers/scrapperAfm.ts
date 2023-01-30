@@ -4,11 +4,12 @@
 
 import puppeteer, { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
-import { getBrowser, Retry } from "./utils.js";
+import { Stock } from "../types.js";
+import { getBrowser, RetryScrapperRun } from "./utils.js";
 
 export interface IItemAfm extends IItem {
   price_afm?: string;
-  stock_afm?: "В наличии" | "Нет в наличии";
+  stock_afm?: Stock;
   last_updated_afm?: string;
 }
 
@@ -24,7 +25,7 @@ export class ScrapperAfm {
     );
   }
 
-  @Retry(3, "Afm")
+  @RetryScrapperRun(3, "Afm")
   async runScrapper() {
     const itemsToScrap = this.getItemsWithValidUrls();
 
@@ -116,14 +117,20 @@ export class ScrapperAfm {
     );
 
     await page.goto(item.ssilkaAFM);
+    try {
+      const inStock = await this.isInStock(page);
 
-    const inStock = await this.isInStock(page);
+      const price = inStock ? await this.getPriceFromPage(page) : "-1";
 
-    const price = inStock ? await this.getPriceFromPage(page) : "-1";
-
-    item.stock_afm = inStock ? "В наличии" : "Нет в наличии";
-    item.price_afm = price;
-    item.last_updated_afm = this.scrappingStartedAt;
+      item.stock_afm = inStock ? "В наличии" : "Нет в наличии";
+      item.price_afm = price;
+      item.last_updated_afm = this.scrappingStartedAt;
+    } catch (e) {
+      console.log(`WARNING Failed to scrap item due to error: ${e}`);
+      item.stock_afm = "failed to scrap";
+      item.price_afm = "failed to scrap";
+      item.last_updated_afm = this.scrappingStartedAt;
+    }
 
     console.log(`Finished scrapping item '${item["g:mpn"]}'`);
 
