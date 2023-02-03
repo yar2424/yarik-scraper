@@ -6,8 +6,8 @@ import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
 import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
-import fs from "fs";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import fs from "fs";
 
 interface IConfig {
   scrappersToRun: IScrappersInfo[];
@@ -109,36 +109,38 @@ const getDevConfig = async (): Promise<IConfig> => {
   };
 };
 
-const getLocalCredentialsConfig = (configFilePath: string) => {
-  const contents = fs.readFileSync(configFilePath).toString();
+const getLocalCredentials = (filePath: string) => {
+  const contents = fs.readFileSync(filePath).toString();
   return JSON.parse(contents);
 };
 
-const localConfig: IConfig = {
-  scrappersToRun: [
-    { name: "Afm", class_: ScrapperAfm },
-    // { name: "AllSpares", class_: ScrapperAllSpares },
-    // { name: "ArtMobile", class_: ScrapperArtMobile },
-    // { name: "FlatCable", class_: ScrapperFlatCable },
-    // { name: "TPlus", class_: ScrapperTPlus },
-    // { name: "Uptel", class_: ScrapperUptel },
-  ],
-  schedule: [
-    // {
-    //   categoryId: 54,
-    //   startDate: new Date("2023-01-10"),
-    //   intervalInDays: 1,
-    // },
-    {
-      categoryId: 121,
-      startDate: new Date("2023-01-28"),
-      intervalInDays: 1,
-    },
-  ],
-  outputFileKey: "parsing-results/outputXml.xml",
-  shopsCredentials: getLocalCredentialsConfig(
-    "/Users/philip/Documents/projects/parser/src/shopsCredentials.json"
-  ),
+const getLocalConfig = (): IConfig => {
+  return {
+    scrappersToRun: [
+      { name: "Afm", class_: ScrapperAfm },
+      // { name: "AllSpares", class_: ScrapperAllSpares },
+      // { name: "ArtMobile", class_: ScrapperArtMobile },
+      // { name: "FlatCable", class_: ScrapperFlatCable },
+      // { name: "TPlus", class_: ScrapperTPlus },
+      // { name: "Uptel", class_: ScrapperUptel },
+    ],
+    schedule: [
+      // {
+      //   categoryId: 54,
+      //   startDate: new Date("2023-01-10"),
+      //   intervalInDays: 1,
+      // },
+      {
+        categoryId: 121,
+        startDate: new Date("2023-01-28"),
+        intervalInDays: 1,
+      },
+    ],
+    outputFileKey: "parsing-results/outputXml.xml",
+    shopsCredentials: getLocalCredentials(
+      "/Users/philip/Documents/projects/parser/src/shopsCredentials.json"
+    ),
+  };
 };
 
 export let config: IConfig;
@@ -152,6 +154,6 @@ export const instantiateConfig = async () => {
   } else if (process.env.NODE_ENV === "dev") {
     config = await getDevConfig();
   } else {
-    config = localConfig;
+    config = getLocalConfig();
   }
 };
