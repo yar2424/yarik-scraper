@@ -68,7 +68,6 @@ test("Object fields are being sorted", () => {
     },
   ];
   outputXmlHelper.sortFields();
-  console.log(outputXmlHelper.xmlItems);
   const outputObjectKeys = Object.keys(outputXmlHelper.xmlItems[0]);
   expect(outputObjectKeys).toEqual([
     "code",
