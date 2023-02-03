@@ -59,12 +59,12 @@ const getMainConfig = async (): Promise<IConfig> => {
   );
   return {
     scrappersToRun: [
-      { name: "AllSpares", class_: ScrapperAllSpares },
-      { name: "FlatCable", class_: ScrapperFlatCable },
-      { name: "Uptel", class_: ScrapperUptel },
       { name: "Afm", class_: ScrapperAfm },
+      { name: "AllSpares", class_: ScrapperAllSpares },
       { name: "ArtMobile", class_: ScrapperArtMobile },
+      { name: "FlatCable", class_: ScrapperFlatCable },
       { name: "TPlus", class_: ScrapperTPlus },
+      { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
       {
@@ -85,12 +85,12 @@ const getDevConfig = async (): Promise<IConfig> => {
   );
   return {
     scrappersToRun: [
-      // { name: "AllSpares", class_: ScrapperAllSpares },
-      { name: "FlatCable", class_: ScrapperFlatCable },
-      { name: "Uptel", class_: ScrapperUptel },
       { name: "Afm", class_: ScrapperAfm },
+      // { name: "AllSpares", class_: ScrapperAllSpares },
       { name: "ArtMobile", class_: ScrapperArtMobile },
+      { name: "FlatCable", class_: ScrapperFlatCable },
       { name: "TPlus", class_: ScrapperTPlus },
+      { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
       // {
@@ -116,12 +116,12 @@ const getLocalCredentialsConfig = (configFilePath: string) => {
 
 const localConfig: IConfig = {
   scrappersToRun: [
-    { name: "AllSpares", class_: ScrapperAllSpares },
-    // { name: "FlatCable", class_: ScrapperFlatCable },
-    // { name: "Uptel", class_: ScrapperUptel },
-    // { name: "Afm", class_: ScrapperAfm },
+    { name: "Afm", class_: ScrapperAfm },
+    // { name: "AllSpares", class_: ScrapperAllSpares },
     // { name: "ArtMobile", class_: ScrapperArtMobile },
+    // { name: "FlatCable", class_: ScrapperFlatCable },
     // { name: "TPlus", class_: ScrapperTPlus },
+    // { name: "Uptel", class_: ScrapperUptel },
   ],
   schedule: [
     // {
