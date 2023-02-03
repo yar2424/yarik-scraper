@@ -1,5 +1,6 @@
 import { getCategoriesThatShouldRunToday } from "./scheduler";
 import { runScrappersForCategoriesIds } from "./scrappingOrchestrator";
+import { instantiateConfig } from "./config";
 
 async function main() {
   console.log(
@@ -7,6 +8,8 @@ async function main() {
       timeZone: "CET",
     })} `
   );
+
+  await instantiateConfig();
 
   const categoriesThatShouldRunToday = getCategoriesThatShouldRunToday();
   console.log(

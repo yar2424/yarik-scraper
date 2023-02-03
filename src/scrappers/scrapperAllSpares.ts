@@ -115,10 +115,8 @@ export class ScrapperAllSpares extends BaseScrapper<IItemAllSpares> {
     await page.goto(item.ssilkaAllspares);
     try {
       const inStock = await this.isInStock(page);
-      console.log(inStock);
 
       const price = inStock ? await this.getPriceFromPage(page) : "-1";
-      console.log(price);
 
       item.stock_as = inStock ? "В наличии" : "Нет в наличии";
       item.price_as = price;
@@ -146,7 +144,6 @@ export class ScrapperAllSpares extends BaseScrapper<IItemAllSpares> {
     const stockElement = await stockContainerElement.$(
       "span.component_product_in-stock_title"
     );
-    // console.log(stockElement.evaluate(el => el.text));
 
     if (stockElement === null) {
       return false;

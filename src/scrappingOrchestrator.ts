@@ -2,8 +2,6 @@ import { config } from "./config";
 import { InputXmlHelper } from "./crmXmlHelper.js";
 import { OutputXmlHelper } from "./outputXmlHelper.js";
 
-const scrappersInfo = config.scrappersToRun;
-
 export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
   const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();
   const itemsToScrap =
@@ -23,6 +21,7 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
     )}`
   );
 
+  const scrappersInfo = config.scrappersToRun;
   for (let scrapperInfo of scrappersInfo) {
     const scrapper = new scrapperInfo.class_(itemsToScrap);
     let itemsWithScrappedData;
