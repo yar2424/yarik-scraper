@@ -6,11 +6,38 @@ import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
 import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
+import fs from "fs";
+
 interface IConfig {
   scrappersToRun: IScrappersInfo[];
   schedule: IScheduleItemp[];
   outputFileKey: string;
+  shopsCredentials: IShopsCredentials;
 }
+
+interface IShopsCredentials {
+  usernameAfm: string;
+  passwordAfm: string;
+  usernameAllSpares: string;
+  passwordAllSpares: string;
+  usernameArtMobile: string;
+  passwordArtMobile: string;
+  usernameFlatCable: string;
+  passwordFlatCable: string;
+  usernameTPlus: string;
+  passwordTPlus: string;
+  usernameUptel: string;
+  passwordUptel: string;
+}
+
+const getShopsCredentialsFromS3 = () => {
+  const contents = fs
+    .readFileSync(
+      "/Users/philip/Documents/projects/parser/src/shopsCredentials.json"
+    )
+    .toString();
+  return JSON.parse(contents);
+};
 
 const mainConfig: IConfig = {
   scrappersToRun: [
@@ -29,14 +56,20 @@ const mainConfig: IConfig = {
     },
   ],
   outputFileKey: "parsing-results/outputXml.xml",
+  shopsCredentials: getShopsCredentialsFromS3(),
+};
+
+const getLocalCredentialsConfig = (configFilePath: string) => {
+  const contents = fs.readFileSync(configFilePath).toString();
+  return JSON.parse(contents);
 };
 
 const devConfig: IConfig = {
   scrappersToRun: [
-    // { name: "AllSpares", class_: ScrapperAllSpares },
+    { name: "AllSpares", class_: ScrapperAllSpares },
     // { name: "FlatCable", class_: ScrapperFlatCable },
     // { name: "Uptel", class_: ScrapperUptel },
-    { name: "Afm", class_: ScrapperAfm },
+    // { name: "Afm", class_: ScrapperAfm },
     // { name: "ArtMobile", class_: ScrapperArtMobile },
     // { name: "TPlus", class_: ScrapperTPlus },
   ],
@@ -53,6 +86,9 @@ const devConfig: IConfig = {
     // },
   ],
   outputFileKey: "parsing-results/out.xml",
+  shopsCredentials: getLocalCredentialsConfig(
+    "/Users/philip/Documents/projects/parser/src/shopsCredentials.json"
+  ),
 };
 
 export let config: IConfig;

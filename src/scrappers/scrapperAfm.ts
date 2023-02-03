@@ -1,11 +1,9 @@
-// /html/body/  div/  div[4]/    div[2]/             div[2]/                   div/  div[2]/div[1]/     div/  div[2]/            span   /span
-// /html/body/  div/  div[4]/    div[2]/             div[2]/                   div/  div   /div[1]/     div/  div[2]/            span[2]/span
-//       body > div > div.main > div.main__content > div.main__content-block > div > div >  div.price > div > div:nth-child(3) > span:nth-child(2) > span
-
-import puppeteer, { Page } from "puppeteer";
+import { Page } from "puppeteer";
+import { config } from "../config.js";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
 
 export interface IItemAfm extends IItem {
   price_afm?: string;
@@ -13,56 +11,20 @@ export interface IItemAfm extends IItem {
   last_updated_afm?: string;
 }
 
-export class ScrapperAfm {
-  constructor(
-    public items: IItemAfm[],
-    public scrappingStartedAt: string = ""
-  ) {}
+const scrapperName = "Afm";
 
-  getItemsWithValidUrls(): IItemAfm[] {
-    return this.items.filter((item) =>
-      item.ssilkaAFM.startsWith("https://afm.com.ua")
+export class ScrapperAfm extends BaseScrapper<IItemAfm> {
+  constructor(public items: IItemAfm[]) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://afm.com.ua",
+      "price_afm",
+      "stock_afm",
+      "last_updated_afm",
+      "ssilkaAFM"
     );
-  }
-
-  @RetryScrapperRun(3, "Afm")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started Afm scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemAfm[] = [];
-
-    for (let item of itemsToScrap) {
-      await new Promise((r) => setTimeout(r, 1000));
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished Afm scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -76,7 +38,7 @@ export class ScrapperAfm {
       console.log("CRITICAL Failed to log in. Failed to get username element.");
       throw new Error("Failed to log in");
     }
-    await loginInput.type("kravchenko989dima@gmail.com");
+    await loginInput.type(config.shopsCredentials.usernameAfm);
 
     const passwordSelector = "input#password";
     const passwordInput = await page.waitForSelector(passwordSelector);
@@ -84,7 +46,7 @@ export class ScrapperAfm {
       console.log("CRITICAL Failed to log in. Failed to get password element.");
       throw new Error("Failed to log in");
     }
-    await passwordInput.type("Kopop1996");
+    await passwordInput.type(config.shopsCredentials.passwordAfm);
 
     const logInButtonSelector = "input[type=submit]";
     const logInButton = await page.waitForSelector(logInButtonSelector);
@@ -162,5 +124,10 @@ export class ScrapperAfm {
     }
     const price = srcTxt.replace(/\./g, ",");
     return price;
+  }
+
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemAfm[]> {
+    return await this.runScrapper();
   }
 }

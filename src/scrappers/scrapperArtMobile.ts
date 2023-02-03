@@ -1,7 +1,9 @@
-import puppeteer, { Page } from "puppeteer";
+import { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
+import { config } from "../config.js";
 
 export interface IItemArtMobile extends IItem {
   price_am?: string;
@@ -9,55 +11,23 @@ export interface IItemArtMobile extends IItem {
   last_updated_am?: string;
 }
 
-export class ScrapperArtMobile {
+const scrapperName = "ArtMobile";
+
+export class ScrapperArtMobile extends BaseScrapper<IItemArtMobile> {
   constructor(
     public items: IItemArtMobile[],
     public scrappingStartedAt: string = ""
-  ) {}
-
-  getItemsWithValidUrls(): IItemArtMobile[] {
-    return this.items.filter((item) =>
-      item.Ssilkaartmobile.startsWith("https://artmobile.ua")
+  ) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://artmobile.ua",
+      "price_am",
+      "stock_am",
+      "last_updated_am",
+      "Ssilkaartmobile"
     );
-  }
-
-  @RetryScrapperRun(3, "ArtMobile")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started ArtMobile scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemArtMobile[] = [];
-
-    for (let item of itemsToScrap) {
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished ArtMobile scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -68,12 +38,18 @@ export class ScrapperArtMobile {
     const usernameSelector =
       "xpath//html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/form/div/div[1]/div[1]/input";
     await page.waitForSelector(usernameSelector);
-    await page.type(usernameSelector, "2020.shestopalov@gmail.com");
+    await page.type(
+      usernameSelector,
+      config.shopsCredentials.usernameArtMobile
+    );
 
     const passwordSelector =
       "xpath//html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/form/div/div[2]/div[1]/input";
     await page.waitForSelector(passwordSelector);
-    await page.type(passwordSelector, "ZZt6pg2ixvph3W8");
+    await page.type(
+      passwordSelector,
+      config.shopsCredentials.passwordArtMobile
+    );
 
     const logInButtonSelector =
       "xpath//html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/form/div/div[3]/input";
@@ -135,10 +111,8 @@ export class ScrapperArtMobile {
     return price;
   }
 
-  async _getPageDuplicate(browser, page) {
-    const duplicatePage = await browser.newPage();
-    await duplicatePage.setCookie(...(await page.cookies()));
-    await duplicatePage.setDefaultNavigationTimeout(0);
-    return duplicatePage;
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemArtMobile[]> {
+    return await this.runScrapper();
   }
 }

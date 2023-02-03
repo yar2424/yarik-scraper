@@ -1,7 +1,9 @@
 import { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
+import { config } from "../config.js";
 
 export interface IItemFlatCable extends IItem {
   price_fc?: string;
@@ -9,55 +11,23 @@ export interface IItemFlatCable extends IItem {
   last_updated_fc?: string;
 }
 
-export class ScrapperFlatCable {
+const scrapperName = "FlatCable";
+
+export class ScrapperFlatCable extends BaseScrapper<IItemFlatCable> {
   constructor(
     public items: IItemFlatCable[],
     public scrappingStartedAt: string = ""
-  ) {}
-
-  getItemsWithValidUrls(): IItemFlatCable[] {
-    return this.items.filter((item) =>
-      item.ssilkaFlatCable.startsWith("https://flat-cable.com.ua")
+  ) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://flat-cable.com.ua",
+      "price_fc",
+      "stock_fc",
+      "last_updated_fc",
+      "ssilkaFlatCable"
     );
-  }
-
-  @RetryScrapperRun(3, "FlatCable")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started FlatCable scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemFlatCable[] = [];
-
-    for (let item of itemsToScrap) {
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished FlatCable scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -71,7 +41,7 @@ export class ScrapperFlatCable {
       console.log("CRITICAL Failed to log in. Failed to get username element.");
       throw new Error("Failed to log in");
     }
-    await loginInput.type("kravchenko989dima@gmail.com");
+    await loginInput.type(config.shopsCredentials.usernameFlatCable);
 
     const passwordSelector = "input[name=USER_PASSWORD]";
     const passwordInput = await page.waitForSelector(passwordSelector);
@@ -79,7 +49,7 @@ export class ScrapperFlatCable {
       console.log("CRITICAL Failed to log in. Failed to get password element.");
       throw new Error("Failed to log in");
     }
-    await passwordInput.type("Kopop1996");
+    await passwordInput.type(config.shopsCredentials.passwordFlatCable);
 
     const logInButtonSelector =
       "div.auth-submit-container > input[type=submit]";
@@ -172,5 +142,10 @@ export class ScrapperFlatCable {
     }
     const price = srcTxt.replace(/[^0-9]/g, "");
     return price;
+  }
+
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemFlatCable[]> {
+    return await this.runScrapper();
   }
 }

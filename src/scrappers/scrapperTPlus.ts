@@ -1,12 +1,10 @@
-// import puppeteer from "puppeteer-extra";
-import puppeteer from "puppeteer";
 import type { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
 
-import { executablePath } from "puppeteer";
-import { RestoreRequestType } from "@aws-sdk/client-s3";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
 import { Stock } from "../types.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
+import { config } from "../config.js";
 
 export interface IItemTPlus extends IItem {
   price_tp?: string;
@@ -14,55 +12,23 @@ export interface IItemTPlus extends IItem {
   last_updated_tp?: string;
 }
 
-export class ScrapperTPlus {
+const scrapperName = "TPlus";
+
+export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
   constructor(
     public items: IItemTPlus[],
     public scrappingStartedAt: string = ""
-  ) {}
-
-  getItemsWithValidUrls(): IItemTPlus[] {
-    return this.items.filter((item) =>
-      item.ssilkatekhno33.startsWith("https://tplus.market")
+  ) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://tplus.market",
+      "price_tp",
+      "stock_tp",
+      "last_updated_tp",
+      "ssilkatekhno33"
     );
-  }
-
-  @RetryScrapperRun(3, "TPlus")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started TPlus scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemTPlus[] = [];
-
-    for (let item of itemsToScrap) {
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished TPlus scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -83,12 +49,12 @@ export class ScrapperTPlus {
     const usernameSelector =
       "xpath//html/body/div[1]/div/div/div[3]/div/div/div[2]/div/div/form/div[2]/div/div/div/div[2]/input";
     await page.waitForSelector(usernameSelector);
-    await page.type(usernameSelector, "r.konstantinov.00@gmail.com");
+    await page.type(usernameSelector, config.shopsCredentials.usernameTPlus);
 
     const passwordSelector =
       "xpath//html/body/div[1]/div/div/div[3]/div/div/div[2]/div/div/form/div[3]/div/div/div/div[2]/input";
     await page.waitForSelector(passwordSelector);
-    await page.type(passwordSelector, "Konstanta2505");
+    await page.type(passwordSelector, config.shopsCredentials.passwordTPlus);
 
     const logInButtonSelector =
       "xpath//html/body/div[1]/div/div/div[3]/div/div/div[2]/div/div/form/div[5]/button";
@@ -154,5 +120,10 @@ export class ScrapperTPlus {
     }
     const price = value.replace(/[^0-9,]/g, "");
     return price;
+  }
+
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemTPlus[]> {
+    return await this.runScrapper();
   }
 }

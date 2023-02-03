@@ -11,7 +11,7 @@
   "main": "build/index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc && cp ./src/shopsCredentials.json ./out/"
   },
   "author": "",
   "license": "ISC",

@@ -1,7 +1,9 @@
 import { Page } from "puppeteer";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
+import { config } from "../config.js";
 
 export interface IItemUptel extends IItem {
   price_uptel?: string;
@@ -9,55 +11,23 @@ export interface IItemUptel extends IItem {
   last_updated_uptel?: string;
 }
 
-export class ScrapperUptel {
+const scrapperName = "Uptel";
+
+export class ScrapperUptel extends BaseScrapper<IItemUptel> {
   constructor(
     public items: IItemUptel[],
     public scrappingStartedAt: string = ""
-  ) {}
-
-  getItemsWithValidUrls(): IItemUptel[] {
-    return this.items.filter((item) =>
-      item.ssilkaUptel.startsWith("https://uptel.com.ua")
+  ) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://uptel.com.ua",
+      "price_uptel",
+      "stock_uptel",
+      "last_updated_uptel",
+      "ssilkaUptel"
     );
-  }
-
-  @RetryScrapperRun(3, "Uptel")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started Uptel scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemUptel[] = [];
-
-    for (let item of itemsToScrap) {
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished Uptel scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -71,7 +41,7 @@ export class ScrapperUptel {
       console.log("CRITICAL Failed to log in. Failed to get username element.");
       throw new Error("Failed to log in");
     }
-    await loginInput.type("parfenovyv@ektaservice.ua");
+    await loginInput.type(config.shopsCredentials.usernameUptel);
 
     const passwordSelector = "form[name=login_form] input[name=password]";
     const passwordInput = await page.waitForSelector(passwordSelector);
@@ -79,7 +49,7 @@ export class ScrapperUptel {
       console.log("CRITICAL Failed to log in. Failed to get password element.");
       throw new Error("Failed to log in");
     }
-    await passwordInput.type("Kopop1996");
+    await passwordInput.type(config.shopsCredentials.passwordUptel);
 
     const logInButtonSelector = "form[name=login_form] input[type=submit]";
     const logInButton = await page.waitForSelector(logInButtonSelector);
@@ -211,5 +181,9 @@ export class ScrapperUptel {
     }
     const price = srcTxt.replace(/[^0-9,.]/g, "").replace(/\./g, ",");
     return price;
+  }
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemUptel[]> {
+    return await this.runScrapper();
   }
 }

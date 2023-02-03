@@ -1,8 +1,9 @@
 import { Page } from "puppeteer";
+import { config } from "../config.js";
 import { IItem } from "../crmXmlHelper.js";
-import { getBrowser, RetryScrapperRun } from "./utils.js";
-import fs from "fs";
 import { Stock } from "../types.js";
+import { BaseScrapper } from "./baseScrapper.js";
+import { RetryScrapperRun } from "./utils.js";
 
 export interface IItemAllSpares extends IItem {
   price_as?: string;
@@ -10,56 +11,23 @@ export interface IItemAllSpares extends IItem {
   last_updated_as?: string;
 }
 
-export class ScrapperAllSpares {
+const scrapperName = "AllSpares";
+
+export class ScrapperAllSpares extends BaseScrapper<IItemAllSpares> {
   constructor(
     public items: IItemAllSpares[],
     public scrappingStartedAt: string = ""
-  ) {}
-
-  getItemsWithValidUrls(): IItemAllSpares[] {
-    return this.items.filter((item) =>
-      item.ssilkaAllspares.startsWith("https://all-spares.ua")
+  ) {
+    super(
+      items,
+      "",
+      scrapperName,
+      "https://all-spares.ua",
+      "price_as",
+      "stock_as",
+      "last_updated_as",
+      "ssilkaAllspares"
     );
-  }
-
-  @RetryScrapperRun(1, "AllSpares")
-  async runScrapper() {
-    const itemsToScrap = this.getItemsWithValidUrls();
-
-    console.log(
-      `Started AllSpares scrapper. Will scrap ${itemsToScrap.length} items.`
-    );
-    this.scrappingStartedAt = new Date().toLocaleString("en-GB", {
-      timeZone: "CET",
-    });
-
-    const browser = await getBrowser();
-    const basePage = await browser.newPage();
-    await basePage.setDefaultNavigationTimeout(0);
-
-    await this.logIn(basePage);
-    // return;
-
-    //time it
-    let start = Date.now();
-
-    let itemsWithScrappedData: IItemAllSpares[] = [];
-
-    for (let item of itemsToScrap) {
-      itemsWithScrappedData.push(await this.scrapItem(basePage, item));
-    }
-
-    await browser.close();
-
-    let end = Date.now();
-    let elapsedMilliseconds = end - start;
-    console.log(
-      `Finished AllSpares scrapping. Scrapped ${
-        itemsToScrap.length
-      } items in ${Math.floor(elapsedMilliseconds / 60000)} minutes.`
-    );
-
-    return itemsWithScrappedData;
   }
 
   async logIn(page: Page) {
@@ -87,7 +55,7 @@ export class ScrapperAllSpares {
       console.log("CRITICAL Failed to log in. Failed to get username element.");
       throw new Error("Failed to log in");
     }
-    await loginInput.type("2020.shestopalov@gmail.com");
+    await loginInput.type(config.shopsCredentials.usernameAllSpares);
 
     const passwordSelector =
       "xpath//html/body/div[2]/div/div[1]/div/div/div[2]/div[1]/div/div[3]/div/div/input";
@@ -96,7 +64,7 @@ export class ScrapperAllSpares {
       console.log("CRITICAL Failed to log in. Failed to get password element.");
       throw new Error("Failed to log in");
     }
-    await passwordInput.type("All535499");
+    await passwordInput.type(config.shopsCredentials.passwordAllSpares);
 
     await new Promise((r) => setTimeout(r, 1000));
     const logInButtonSelector =
@@ -113,6 +81,9 @@ export class ScrapperAllSpares {
     });
 
     await new Promise((r) => setTimeout(r, 3000));
+
+    // make pupeteer screenshot
+    await page.screenshot({ path: "screenshots/afterLogIn.png" });
 
     const testSelector =
       "xpath//html/body/div[1]/div/header/div[2]/div/div/div[4]/div/div[3]/div/div";
@@ -203,5 +174,10 @@ export class ScrapperAllSpares {
     }
     const price = priceTxt.replace(/[^0-9.]/g, "").replace(/[.]/g, ",");
     return price;
+  }
+
+  @RetryScrapperRun(3, scrapperName)
+  async runScrapperWrapper(): Promise<IItemAllSpares[]> {
+    return await this.runScrapper();
   }
 }

@@ -27,7 +27,7 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
     const scrapper = new scrapperInfo.class_(itemsToScrap);
     let itemsWithScrappedData;
     try {
-      itemsWithScrappedData = await scrapper.runScrapper();
+      itemsWithScrappedData = await scrapper.runScrapperWrapper();
     } catch (error) {
       console.log(`CRITICAL Failed to run ${scrapperInfo.name} scrapper`);
       continue;
