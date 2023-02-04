@@ -49,7 +49,7 @@ export abstract class BaseScrapper<T extends IItem> {
           ...item,
           [this.priceFieldName]: "no link",
           [this.stockFieldName]: "no link",
-          [this.scrappingStartedAt]: this.scrappingStartedAt,
+          [this.lastUpdatedFieldName]: this.scrappingStartedAt,
         };
       }
       itemsWithScrappedData.push(newItem);
