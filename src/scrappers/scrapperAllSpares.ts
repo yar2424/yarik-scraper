@@ -82,9 +82,6 @@ export class ScrapperAllSpares extends BaseScrapper<IItemAllSpares> {
 
     await new Promise((r) => setTimeout(r, 3000));
 
-    // make pupeteer screenshot
-    await page.screenshot({ path: "screenshots/afterLogIn.png" });
-
     const testSelector =
       "xpath//html/body/div[1]/div/header/div[2]/div/div/div[4]/div/div[3]/div/div";
     const testElement = await page.waitForSelector(testSelector);
