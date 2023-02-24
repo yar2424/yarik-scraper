@@ -67,10 +67,82 @@ const getMainConfig = async (): Promise<IConfig> => {
       { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
+      // displays - mobile phones
       {
         categoryId: 121,
         startDate: new Date("2023-01-30"),
         intervalInDays: 3,
+      },
+      {
+        categoryId: 56,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 221,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 58,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 529,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 814,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 935,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 944,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 946,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 948,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 947,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 652,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      // displays - tablets
+      {
+        categoryId: 515,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 236,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
+      },
+      {
+        categoryId: 235,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 4,
       },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
