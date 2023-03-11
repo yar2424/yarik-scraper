@@ -4,16 +4,32 @@ import { ScrapperArtMobile } from "./scrappers/scrapperArtMobile.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
 import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
 import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
-import { IScheduleItemp, IScrappersInfo } from "./types";
+import {
+  IScheduleItem,
+  IScheduleItemFromDynamo,
+  IScrappersInfo,
+  Shop,
+} from "./types";
 
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+
 import fs from "fs";
+import { BaseScrapper } from "./scrappers/baseScrapper.js";
+import { IItem } from "./crmXmlHelper.js";
+
+interface IConfigFromDynamo {
+  scrappersToRun: Shop[];
+  schedule: IScheduleItemFromDynamo[];
+}
 
 interface IConfig {
   scrappersToRun: IScrappersInfo[];
-  schedule: IScheduleItemp[];
+  schedule: IScheduleItem[];
   outputFileKey: string;
   shopsCredentials: IShopsCredentials;
+  dynamodbProgressItemKey?: string;
 }
 
 interface IShopsCredentials {
@@ -52,133 +68,90 @@ const getShopsCredentialsFromS3 = async (bucket: string, fileKey: string) => {
   }
 };
 
-const getMainConfig = async (): Promise<IConfig> => {
+export const getConfigPartStoredInDynamodb = async (
+  configKey: string
+): Promise<IConfigFromDynamo> => {
+  const ddbClient = new DynamoDBClient({});
+
+  const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
+
+  const params = {
+    TableName: "YarikScrapper",
+    Key: {
+      PK: configKey,
+    },
+  };
+
+  const getItem = async () => {
+    try {
+      const data = await ddbDocClient.send(new GetCommand(params));
+      return data.Item;
+    } catch (err) {
+      console.log("Error", err);
+    }
+  };
+  const item: any = (await getItem()) as unknown as IConfigFromDynamo;
+  const jsonString = item.Value;
+  const configObject = JSON.parse(jsonString);
+
+  return configObject;
+};
+
+const instantiateConfigFromDynamodb = async (
+  configKey: string
+): Promise<IConfig> => {
   const shopsCredentials = await getShopsCredentialsFromS3(
     "parser-yarik",
     "shopsCredentials.json"
   );
+
+  const configFromDynamodb = await getConfigPartStoredInDynamodb(configKey);
+
+  const scrappersToRun = configFromDynamodb.scrappersToRun.map((shopName) => ({
+    name: shopName,
+    class_: shopNameToScrapperClassMap[shopName],
+  }));
+
+  const schedule = configFromDynamodb.schedule.map((scheduleItem) => ({
+    categoryId: scheduleItem.categoryId,
+    startDate: new Date(scheduleItem.startDate),
+    intervalInDays: scheduleItem.intervalInDays,
+  }));
+
   return {
-    scrappersToRun: [
-      { name: "Afm", class_: ScrapperAfm },
-      { name: "AllSpares", class_: ScrapperAllSpares },
-      { name: "ArtMobile", class_: ScrapperArtMobile },
-      { name: "FlatCable", class_: ScrapperFlatCable },
-      { name: "TPlus", class_: ScrapperTPlus },
-      { name: "Uptel", class_: ScrapperUptel },
-    ],
-    schedule: [
-      // displays - mobile phones
-      {
-        categoryId: 121,
-        startDate: new Date("2023-01-30"),
-        intervalInDays: 3,
-      },
-      {
-        categoryId: 56,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 221,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 58,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 529,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 814,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 935,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 944,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 946,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 948,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 947,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 652,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      // displays - tablets
-      {
-        categoryId: 515,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 236,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-      {
-        categoryId: 235,
-        startDate: new Date("2023-02-25"),
-        intervalInDays: 4,
-      },
-    ],
+    scrappersToRun,
+    schedule,
     outputFileKey: "parsing-results/outputXml.xml",
     shopsCredentials,
   };
 };
 
+const shopNameToScrapperClassMap: {
+  [key in Shop]: typeof BaseScrapper<IItem>;
+} = {
+  Afm: ScrapperAfm,
+  AllSpares: ScrapperAllSpares,
+  ArtMobile: ScrapperArtMobile,
+  FlatCable: ScrapperFlatCable,
+  TPlus: ScrapperTPlus,
+  Uptel: ScrapperUptel,
+};
+
+export const getMainConfig = async (): Promise<IConfig> => {
+  return instantiateConfigFromDynamodb("config-main");
+};
+
 const getDevConfig = async (): Promise<IConfig> => {
-  const shopsCredentials = await getShopsCredentialsFromS3(
-    "parser-yarik",
-    "shopsCredentials.json"
-  );
-  return {
-    scrappersToRun: [
-      { name: "Afm", class_: ScrapperAfm },
-      // { name: "AllSpares", class_: ScrapperAllSpares },
-      { name: "ArtMobile", class_: ScrapperArtMobile },
-      { name: "FlatCable", class_: ScrapperFlatCable },
-      { name: "TPlus", class_: ScrapperTPlus },
-      { name: "Uptel", class_: ScrapperUptel },
-    ],
-    schedule: [
-      // {
-      //   categoryId: 54,
-      //   startDate: new Date("2023-01-10"),
-      //   intervalInDays: 1,
-      // },
-      {
-        categoryId: 121,
-        startDate: new Date("2023-01-28"),
-        intervalInDays: 1,
-      },
-    ],
-    outputFileKey: "parsing-results/outputXml.xml",
-    shopsCredentials,
+  return instantiateConfigFromDynamodb("config-dev");
+};
+
+const getManualRunConfig = async (): Promise<IConfig> => {
+  let config = await instantiateConfigFromDynamodb("config-manual-run");
+  config = {
+    ...config,
+    dynamodbProgressItemKey: "manual-run",
   };
+  return config;
 };
 
 const getLocalCredentials = (filePath: string) => {
@@ -225,6 +198,8 @@ export const instantiateConfig = async () => {
     config = await getMainConfig();
   } else if (process.env.NODE_ENV === "dev") {
     config = await getDevConfig();
+  } else if (process.env.NODE_ENV === "manual-run") {
+    config = await getManualRunConfig();
   } else {
     config = getLocalConfig();
   }

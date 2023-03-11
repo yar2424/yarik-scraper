@@ -11,7 +11,13 @@ export interface IScrappersInfo {
   class_: any;
 }
 
-export interface IScheduleItemp {
+export interface IScheduleItemFromDynamo {
+  categoryId: number;
+  startDate: string;
+  intervalInDays: number;
+}
+
+export interface IScheduleItem {
   categoryId: number;
   startDate: Date;
   intervalInDays: number;

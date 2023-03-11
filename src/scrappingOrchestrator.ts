@@ -1,6 +1,7 @@
 import { config } from "./config";
 import { InputXmlHelper } from "./crmXmlHelper.js";
 import { OutputXmlHelper } from "./outputXmlHelper.js";
+import { logProgress } from "./progressLogger";
 
 export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
   const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();
@@ -22,7 +23,11 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
   );
 
   const scrappersInfo = config.scrappersToRun;
-  for (let scrapperInfo of scrappersInfo) {
+  for (let [scrapperIndex, scrapperInfo] of scrappersInfo.entries()) {
+    logProgress(
+      (scrapperIndex / scrappersInfo.length) * 100,
+      `Running ${scrapperInfo.name} scraper`
+    );
     const scrapper = new scrapperInfo.class_(itemsToScrap);
     let itemsWithScrappedData;
     try {
@@ -47,4 +52,5 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
 
     await outputXmlHelper.uploadXMLToS3();
   }
+  logProgress(100, "All done!");
 }
