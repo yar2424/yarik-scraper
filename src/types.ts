@@ -4,7 +4,9 @@ export type Shop =
   | "Afm"
   | "Uptel"
   | "FlatCable"
-  | "AllSpares";
+  | "AllSpares"
+  | "GsmForsage"
+  | "WelcomeMobi";
 
 export interface IScrappersInfo {
   name: Shop;

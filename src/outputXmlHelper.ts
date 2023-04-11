@@ -36,6 +36,8 @@ export class OutputXmlHelper {
       Uptel: ["price_uptel", "stock_uptel", "last_updated_uptel"],
       FlatCable: ["price_fc", "stock_fc", "last_updated_fc"],
       AllSpares: ["price_as", "stock_as", "last_updated_as"],
+      GsmForsage: ["price_forsage", "stock_forsage", "last_updated_forsage"],
+      WelcomeMobi: ["price_wm", "stock_wm", "lwmt_updated_wm"],
     };
   }
 
