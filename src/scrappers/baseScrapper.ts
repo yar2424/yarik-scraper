@@ -41,7 +41,7 @@ export abstract class BaseScrapper<T extends IItem> {
       // await new Promise((r) => setTimeout(r, 1000));
 
       let newItem;
-      if (this.isValidUrl(item[this.urlFieldName])) {
+      if (item[this.urlFieldName] && this.isValidUrl(item[this.urlFieldName])) {
         newItem = await this.scrapItem(basePage, item);
       } else {
         console.log(`Item '${item["g:mpn"]}' has missing or invalid link`);

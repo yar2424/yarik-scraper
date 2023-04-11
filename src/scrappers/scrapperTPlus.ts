@@ -37,6 +37,7 @@ export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
     const logInUrl = "https://tplus.market/";
 
     await page.goto(logInUrl);
+    await new Promise((res) => setTimeout(res, 3000));
     const logInPopUpSelector =
       "xpath//html/body/div/div/div/div[1]/header/div/div/div[2]/div/span[1]";
     const logInPopUpElement = await page.waitForSelector(logInPopUpSelector);
@@ -44,7 +45,9 @@ export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
       console.log("Failed to log in");
       throw new Error("Failed to log in");
     }
+    await new Promise((res) => setTimeout(res, 3000));
     await logInPopUpElement.click();
+    await new Promise((res) => setTimeout(res, 3000));
 
     const usernameSelector =
       "xpath//html/body/div[1]/div/div/div[3]/div/div/div[2]/div/div/form/div[2]/div/div/div/div[2]/input";
@@ -61,7 +64,7 @@ export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
     await page.waitForSelector(logInButtonSelector);
     await page.click(logInButtonSelector);
 
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 3000));
 
     console.log("Logged in");
   }

@@ -4,6 +4,8 @@ import { ScrapperArtMobile } from "./scrappers/scrapperArtMobile.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
 import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
 import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
+import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
+import { ScrapperWelcomeMobi } from "./scrappers/scrapperWelcomeMobi.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
@@ -29,6 +31,10 @@ interface IShopsCredentials {
   passwordTPlus: string;
   usernameUptel: string;
   passwordUptel: string;
+  usernameGsmForsage: string;
+  passwordGsmForsage: string;
+  usernameWelcomeMobi: string;
+  passwordWelcomeMobi: string;
 }
 
 const getShopsCredentialsFromS3 = async (bucket: string, fileKey: string) => {
@@ -65,6 +71,8 @@ const getMainConfig = async (): Promise<IConfig> => {
       { name: "FlatCable", class_: ScrapperFlatCable },
       { name: "TPlus", class_: ScrapperTPlus },
       { name: "Uptel", class_: ScrapperUptel },
+      { name: "GsmForsage", class_: ScrapperGsmForsage },
+      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
     ],
     schedule: [
       // displays - mobile phones
@@ -157,12 +165,14 @@ const getDevConfig = async (): Promise<IConfig> => {
   );
   return {
     scrappersToRun: [
-      { name: "Afm", class_: ScrapperAfm },
+      // { name: "Afm", class_: ScrapperAfm },
       // { name: "AllSpares", class_: ScrapperAllSpares },
-      { name: "ArtMobile", class_: ScrapperArtMobile },
-      { name: "FlatCable", class_: ScrapperFlatCable },
+      // { name: "ArtMobile", class_: ScrapperArtMobile },
+      // { name: "FlatCable", class_: ScrapperFlatCable },
       { name: "TPlus", class_: ScrapperTPlus },
-      { name: "Uptel", class_: ScrapperUptel },
+      // { name: "Uptel", class_: ScrapperUptel },
+      { name: "GsmForsage", class_: ScrapperGsmForsage },
+      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
     ],
     schedule: [
       // {
@@ -189,12 +199,14 @@ const getLocalCredentials = (filePath: string) => {
 const getLocalConfig = (): IConfig => {
   return {
     scrappersToRun: [
-      { name: "Afm", class_: ScrapperAfm },
+      // { name: "Afm", class_: ScrapperAfm },
       // { name: "AllSpares", class_: ScrapperAllSpares },
       // { name: "ArtMobile", class_: ScrapperArtMobile },
       // { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
       // { name: "Uptel", class_: ScrapperUptel },
+      // { name: "GsmForsage", class_: ScrapperGsmForsage },
+      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
     ],
     schedule: [
       // {

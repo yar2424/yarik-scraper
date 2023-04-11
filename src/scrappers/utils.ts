@@ -83,7 +83,10 @@ export async function getBrowser() {
   // puppeteer.use(StealthPlugin());
   return await puppeteer.launch({
     // headless: false,
-    // defaultViewport: null,
+    defaultViewport: {
+      width: 1200,
+      height: 800,
+    },
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -100,3 +103,4 @@ export async function getBrowser() {
     // executablePath: executablePath(),
   });
 }
+//
