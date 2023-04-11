@@ -44,6 +44,7 @@ export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
       console.log("Failed to log in");
       throw new Error("Failed to log in");
     }
+    await new Promise((res) => setTimeout(res, 3000));
     await logInPopUpElement.click();
 
     const usernameSelector =
@@ -61,7 +62,7 @@ export class ScrapperTPlus extends BaseScrapper<IItemTPlus> {
     await page.waitForSelector(logInButtonSelector);
     await page.click(logInButtonSelector);
 
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 3000));
 
     console.log("Logged in");
   }

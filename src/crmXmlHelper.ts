@@ -109,6 +109,8 @@ export interface IItem {
   ssilkaUptel: string;
   ssilkaFlatCable: string;
   ssilkaAllspares: string;
+  ssilkaGsmForsage: string;
+  ssilkaWelcomeMobi: string;
 }
 
 export class ItemsHelper {
