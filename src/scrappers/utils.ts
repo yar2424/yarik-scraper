@@ -1,7 +1,7 @@
-import puppeteer from "puppeteer";
-// import { executablePath } from "puppeteer";
-// import puppeteer from "puppeteer-extra";
-// import StealthPlugin from "puppeteer-extra-plugin-stealth";
+// import puppeteer from "puppeteer";
+import { executablePath } from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 import { Shop } from "../types";
 
@@ -80,6 +80,41 @@ export function RetryItemScrap(maxAttempts: number) {
 }
 
 export async function getBrowser() {
+  puppeteer.use(StealthPlugin());
+  const browser = await puppeteer.launch({
+    // headless: false,
+    defaultViewport: {
+      width: 1200,
+      height: 800,
+    },
+    args: [
+      // "--proxy-server=zproxy.lum-superproxy.io:22225",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--no-first-run",
+      "--no-zygote",
+      "--deterministic-fetch",
+      "--disable-features=IsolateOrigins",
+      "--disable-site-isolation-trials",
+      "--single-process",
+      // "--window-size=1920,1080",
+    ],
+    executablePath: executablePath(),
+  });
+  const page = await browser.newPage();
+  // await page.authenticate({
+  //   username: "",
+  //   password: "",
+  // });
+  await page.goto("http://lumtest.com/myip.json");
+  const html = await page.evaluate(() => document.documentElement.outerHTML);
+  console.log(html);
+  await page.close();
+  return browser;
+}
+export async function getLocalBrowser() {
   // puppeteer.use(StealthPlugin());
   return await puppeteer.launch({
     // headless: false,

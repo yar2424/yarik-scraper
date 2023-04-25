@@ -37,7 +37,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
 
     await page.goto(logInUrl);
     const logInPopUpSelector =
-      "xpath//html/body/div[2]/header/div[2]/div[4]/span[1]/a";
+      "xpath//html/body/div[2]/header/div[2]/div[5]/span[1]/a";
 
     const logInPopUpElement = await page.waitForSelector(logInPopUpSelector);
     if (logInPopUpElement === null) {
@@ -77,7 +77,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
     await new Promise((res) => setTimeout(res, 3000));
 
     const testSelector =
-      "xpath//html/body/div[2]/header/div[2]/div[4]/span[2]/div/ul/li[2]/a";
+      "xpath//html/body/div[2]/header/div[2]/div[5]/span[2]/div/ul/li[2]/a";
     const testElement = await page.waitForSelector(testSelector);
     if (testElement === null) {
       console.log(
