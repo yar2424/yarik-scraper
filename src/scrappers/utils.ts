@@ -88,7 +88,7 @@ export async function getBrowser() {
       height: 800,
     },
     args: [
-      "--proxy-server=zproxy.lum-superproxy.io:22225",
+      // "--proxy-server=zproxy.lum-superproxy.io:22225",
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
@@ -104,10 +104,10 @@ export async function getBrowser() {
     executablePath: executablePath(),
   });
   const page = await browser.newPage();
-  await page.authenticate({
-    username: "",
-    password: "",
-  });
+  // await page.authenticate({
+  //   username: "",
+  //   password: "",
+  // });
   await page.goto("http://lumtest.com/myip.json");
   const html = await page.evaluate(() => document.documentElement.outerHTML);
   console.log(html);
