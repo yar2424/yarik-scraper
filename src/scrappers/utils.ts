@@ -81,13 +81,14 @@ export function RetryItemScrap(maxAttempts: number) {
 
 export async function getBrowser() {
   puppeteer.use(StealthPlugin());
-  return await puppeteer.launch({
+  const browser = await puppeteer.launch({
     // headless: false,
     defaultViewport: {
       width: 1200,
       height: 800,
     },
     args: [
+      // "--proxy-server=zproxy.lum-superproxy.io:22225",
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
@@ -102,6 +103,16 @@ export async function getBrowser() {
     ],
     executablePath: executablePath(),
   });
+  const page = await browser.newPage();
+  // await page.authenticate({
+  //   username: "",
+  //   password: "",
+  // });
+  await page.goto("http://lumtest.com/myip.json");
+  const html = await page.evaluate(() => document.documentElement.outerHTML);
+  console.log(html);
+  await page.close();
+  return browser;
 }
 export async function getLocalBrowser() {
   // puppeteer.use(StealthPlugin());
