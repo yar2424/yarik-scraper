@@ -69,7 +69,7 @@ const getMainConfig = async (): Promise<IConfig> => {
       { name: "AllSpares", class_: ScrapperAllSpares },
       { name: "ArtMobile", class_: ScrapperArtMobile },
       { name: "FlatCable", class_: ScrapperFlatCable },
-      { name: "TPlus", class_: ScrapperTPlus },
+      // { name: "TPlus", class_: ScrapperTPlus },
       { name: "Uptel", class_: ScrapperUptel },
       { name: "GsmForsage", class_: ScrapperGsmForsage },
       { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
