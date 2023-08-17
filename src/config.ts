@@ -2,9 +2,9 @@ import { ScrapperAfm } from "./scrappers/scrapperAfm.js";
 import { ScrapperAllSpares } from "./scrappers/scrapperAllSpares.js";
 import { ScrapperArtMobile } from "./scrappers/scrapperArtMobile.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
+import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
 import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
 import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
-import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
 import { ScrapperWelcomeMobi } from "./scrappers/scrapperWelcomeMobi.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
@@ -70,9 +70,9 @@ const getMainConfig = async (): Promise<IConfig> => {
       { name: "ArtMobile", class_: ScrapperArtMobile },
       { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
-      { name: "Uptel", class_: ScrapperUptel },
       { name: "GsmForsage", class_: ScrapperGsmForsage },
       { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
       // displays - mobile phones
