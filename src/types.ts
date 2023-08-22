@@ -6,7 +6,8 @@ export type Shop =
   | "FlatCable"
   | "AllSpares"
   | "GsmForsage"
-  | "WelcomeMobi";
+  | "WelcomeMobi"
+  | "Displayko";
 
 export interface IScrappersInfo {
   name: Shop;
