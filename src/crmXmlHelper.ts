@@ -1,5 +1,5 @@
-import { XMLParser } from "fast-xml-parser";
 import axios from "axios";
+import { XMLParser } from "fast-xml-parser";
 
 export class InputXmlHelper {
   constructor(
@@ -111,6 +111,7 @@ export interface IItem {
   ssilkaAllspares: string;
   ssilkaGsmForsage: string;
   ssilkaWelcomeMobi: string;
+  ssilkaDisplayko: string;
 }
 
 export class ItemsHelper {
