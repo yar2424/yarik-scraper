@@ -1,6 +1,7 @@
 import { ScrapperAfm } from "./scrappers/scrapperAfm.js";
 import { ScrapperAllSpares } from "./scrappers/scrapperAllSpares.js";
 import { ScrapperArtMobile } from "./scrappers/scrapperArtMobile.js";
+import { ScrapperDisplayko } from "./scrappers/scrapperDisplayko.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
 import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
 import { ScrapperTPlus } from "./scrappers/scrapperTPlus.js";
@@ -72,6 +73,7 @@ const getMainConfig = async (): Promise<IConfig> => {
       // { name: "TPlus", class_: ScrapperTPlus },
       { name: "GsmForsage", class_: ScrapperGsmForsage },
       { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      { name: "Displayko", class_: ScrapperDisplayko },
       { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
