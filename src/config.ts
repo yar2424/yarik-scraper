@@ -154,6 +154,12 @@ const getMainConfig = async (): Promise<IConfig> => {
         startDate: new Date("2023-02-25"),
         intervalInDays: 4,
       },
+      // batteries
+      {
+        categoryId: 117,
+        startDate: new Date("2023-08-29"),
+        intervalInDays: 10,
+      },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
     shopsCredentials,
