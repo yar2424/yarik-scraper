@@ -46,5 +46,6 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
     outputXmlHelper.sortFields();
 
     await outputXmlHelper.uploadXMLToS3();
+    await outputXmlHelper.uploadXMLToS3InParts(1800);
   }
 }
