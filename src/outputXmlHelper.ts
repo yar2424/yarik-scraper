@@ -138,11 +138,11 @@ export class OutputXmlHelper {
     });
   }
 
-  generateXmlStringFromXmlItems() {
+  generateXmlStringFromXmlItems(xmlItems: IOutputXmlItem[]): string {
     const outputXmlJSObject = {
       mobile_parts: {
         storage: {
-          item: this.xmlItems,
+          item: xmlItems,
         },
       },
     };
@@ -157,7 +157,7 @@ export class OutputXmlHelper {
   }
 
   async uploadXMLToS3() {
-    const fileContents = this.generateXmlStringFromXmlItems();
+    const fileContents = this.generateXmlStringFromXmlItems(this.xmlItems);
     const objectInfo = {
       Bucket: this.xmlS3Bucket,
       Key: this.xmlS3Key,
@@ -166,5 +166,34 @@ export class OutputXmlHelper {
 
     const data = await s3Client.send(new PutObjectCommand(objectInfo));
     return data;
+  }
+  async uploadXMLToS3InParts(maxItemsPerFile: number) {
+    let chunked: IOutputXmlItem[][] = [];
+    for (let i = 0; i < this.xmlItems.length; i += maxItemsPerFile) {
+      chunked.push(this.xmlItems.slice(i, i + maxItemsPerFile));
+    }
+    const filesContents = chunked.map((value) => {
+      return this.generateXmlStringFromXmlItems(value);
+    });
+    for (let i = 0; i < filesContents.length; i += 1) {
+      function getS3KeyForChunk(chunk: number, baseKey: string): string {
+        const parts = baseKey.split(".");
+        let mainPart: string = "";
+        if (parts.length > 1) {
+          mainPart = parts.slice(0, -1).join(".");
+        }
+        const extension = parts[parts.length - 1];
+        return mainPart + "-" + chunk + "." + extension;
+      }
+
+      const fileContents = filesContents[i];
+      const objectInfo = {
+        Bucket: this.xmlS3Bucket,
+        Key: getS3KeyForChunk(i + 1, this.xmlS3Key),
+        Body: fileContents,
+      };
+
+      const data = await s3Client.send(new PutObjectCommand(objectInfo));
+    }
   }
 }
