@@ -40,8 +40,8 @@ export class OutputXmlHelper {
       WelcomeMobi: ["price_wm", "stock_wm", "last_updated_wm"],
       Displayko: [
         "price_displayko",
-        "stock_disprice_displayko",
-        "last_updated_disprice_displayko",
+        "stock_displayko",
+        "last_updated_displayko",
       ],
     };
   }
@@ -123,6 +123,23 @@ export class OutputXmlHelper {
         item[fieldName] = item[fieldName] ?? "no link";
       });
       return item;
+    });
+  }
+
+  removeExtraFields() {
+    const fieldsArrays = Object.values(this.shopFieldNamesMappings);
+    const allowedFields = fieldsArrays.reduce(
+      (acc, cur) => [...acc, ...cur],
+      []
+    );
+    this.xmlItems = this.xmlItems.map((item) => {
+      const filteredObj = {};
+      for (const key in item) {
+        if (allowedFields.includes(key)) {
+          filteredObj[key] = item[key];
+        }
+      }
+      return filteredObj as IOutputXmlItem;
     });
   }
 

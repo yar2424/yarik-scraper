@@ -182,16 +182,16 @@ const getDevConfig = async (): Promise<IConfig> => {
       // { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
     ],
     schedule: [
-      // {
-      //   categoryId: 54,
-      //   startDate: new Date("2023-01-10"),
-      //   intervalInDays: 1,
-      // },
       {
-        categoryId: 121,
-        startDate: new Date("2023-01-28"),
+        categoryId: 54,
+        startDate: new Date("2023-01-10"),
         intervalInDays: 1,
       },
+      // {
+      //   categoryId: 121,
+      //   startDate: new Date("2023-01-28"),
+      //   intervalInDays: 1,
+      // },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
     shopsCredentials,

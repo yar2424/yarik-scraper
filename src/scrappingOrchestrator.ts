@@ -43,6 +43,7 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
     );
 
     outputXmlHelper.addMissingFields();
+    outputXmlHelper.removeExtraFields();
     outputXmlHelper.sortFields();
 
     await outputXmlHelper.uploadXMLToS3();
