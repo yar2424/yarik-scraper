@@ -172,26 +172,100 @@ const getDevConfig = async (): Promise<IConfig> => {
   );
   return {
     scrappersToRun: [
-      // { name: "Afm", class_: ScrapperAfm },
-      // { name: "AllSpares", class_: ScrapperAllSpares },
-      // { name: "ArtMobile", class_: ScrapperArtMobile },
-      // { name: "FlatCable", class_: ScrapperFlatCable },
+      { name: "Afm", class_: ScrapperAfm },
+      { name: "AllSpares", class_: ScrapperAllSpares },
+      { name: "ArtMobile", class_: ScrapperArtMobile },
+      { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
-      // { name: "Uptel", class_: ScrapperUptel },
       { name: "GsmForsage", class_: ScrapperGsmForsage },
-      // { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      { name: "Displayko", class_: ScrapperDisplayko },
+      { name: "Uptel", class_: ScrapperUptel },
     ],
     schedule: [
+      // displays - mobile phones
       {
-        categoryId: 54,
-        startDate: new Date("2023-01-10"),
+        categoryId: 121,
+        startDate: new Date("2023-01-30"),
         intervalInDays: 1,
       },
-      // {
-      //   categoryId: 121,
-      //   startDate: new Date("2023-01-28"),
-      //   intervalInDays: 1,
-      // },
+      {
+        categoryId: 56,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 221,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 58,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 529,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 814,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 935,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 944,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 946,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 948,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 947,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 652,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      // displays - tablets
+      {
+        categoryId: 515,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 236,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      {
+        categoryId: 235,
+        startDate: new Date("2023-02-25"),
+        intervalInDays: 1,
+      },
+      // batteries
+      {
+        categoryId: 117,
+        startDate: new Date("2023-08-29"),
+        intervalInDays: 1,
+      },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
     shopsCredentials,

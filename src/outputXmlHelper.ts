@@ -128,10 +128,8 @@ export class OutputXmlHelper {
 
   removeExtraFields() {
     const fieldsArrays = Object.values(this.shopFieldNamesMappings);
-    const allowedFields = fieldsArrays.reduce(
-      (acc, cur) => [...acc, ...cur],
-      []
-    );
+    let allowedFields = fieldsArrays.reduce((acc, cur) => [...acc, ...cur], []);
+    allowedFields = allowedFields.concat(["code", "name"]);
     this.xmlItems = this.xmlItems.map((item) => {
       const filteredObj = {};
       for (const key in item) {
