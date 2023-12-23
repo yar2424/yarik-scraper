@@ -1,9 +1,9 @@
 import { Page } from "puppeteer";
+import { config } from "../config.js";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
 import { BaseScrapper } from "./baseScrapper.js";
 import { RetryScrapperRun } from "./utils.js";
-import { config } from "../config.js";
 
 export interface IItemGsmForsage extends IItem {
   price_forsage?: string;
@@ -48,7 +48,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
     await logInPopUpElement.click();
 
     const usernameSelector =
-      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[2]/div[2]/form/fieldset/div[1]/div/input";
+      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[1]/div[2]/div[2]/form/fieldset/div[1]/div/input";
     const loginInput = await page.waitForSelector(usernameSelector);
     if (loginInput === null) {
       console.log("CRITICAL Failed to log in. Failed to get username element.");
@@ -57,7 +57,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
     await loginInput.type(config.shopsCredentials.usernameGsmForsage);
 
     const passwordSelector =
-      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[2]/div[2]/form/fieldset/div[2]/div/input";
+      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[1]/div[2]/div[2]/form/fieldset/div[2]/div/input";
     const passwordInput = await page.waitForSelector(passwordSelector);
     if (passwordInput === null) {
       console.log("CRITICAL Failed to log in. Failed to get password element.");
@@ -66,7 +66,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
     await passwordInput.type(config.shopsCredentials.passwordGsmForsage);
 
     const logInButtonSelector =
-      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[2]/div[2]/form/fieldset/div[3]/div[1]/button";
+      "xpath//html/body/div[2]/div/div[1]/div/div[2]/div[1]/div[2]/div[2]/form/fieldset/div[3]/div[1]/button";
     const logInButton = await page.waitForSelector(logInButtonSelector);
     if (logInButton === null) {
       console.log("CRITICAL Failed to log in. Failed to get log in button.");
