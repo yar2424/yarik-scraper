@@ -1,9 +1,9 @@
 import { Page } from "puppeteer";
+import { config } from "../config.js";
 import { IItem } from "../crmXmlHelper.js";
 import { Stock } from "../types.js";
 import { BaseScrapper } from "./baseScrapper.js";
 import { RetryScrapperRun } from "./utils.js";
-import { config } from "../config.js";
 
 export interface IItemArtMobile extends IItem {
   price_am?: string;
@@ -89,26 +89,44 @@ export class ScrapperArtMobile extends BaseScrapper<IItemArtMobile> {
   }
 
   async isInStock(page: Page) {
-    const [el] = await page.$x(
-      "/html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/div[4]/ul/li/div/div[2]/form/button"
-    );
-    return el === undefined;
+    // Same fix is needed as one already done below for getPriceFromPage
+    //
+    // const [el] = await page.$x(
+    //   "/html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/div[4]/ul/li/div/div[2]/form/button"
+    // );
+    // return el === undefined;
+    return false;
   }
 
   async getPriceFromPage(page: Page) {
-    const [el] = await page.$x(
-      "/html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/div[4]/div[1]/div[1]/div/div"
+    const el = await page.waitForSelector(
+      "xpath//html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/div[4]/div[1]/div[1]/div/div"
     );
-    const src = await el.getProperty("textContent");
-    const srcTxt = await src.jsonValue();
+    if (el === null) {
+      console.log("CRITICAL Failed to scrap price");
+      return "-1";
+    }
+    const srcTxt = await el.evaluate((el) => el.getAttribute("content"));
     if (srcTxt === null) {
-      console.log(
-        `WARNING Couldn't retrieve price even though isInStock check passed`
-      );
+      console.log("CRITICAL Failed to scrap price");
       return "-1";
     }
     const price = srcTxt.replace(/[^0-9,]/g, "");
     return price;
+
+    // const [el] = await page.$x(
+    //   "/html/body/div[2]/div[1]/div[4]/div/div[1]/div/div[2]/div/div[4]/div[1]/div[1]/div/div"
+    // );
+    // const src = await el.getProperty("textContent");
+    // const srcTxt = await src.jsonValue();
+    // if (srcTxt === null) {
+    //   console.log(
+    //     `WARNING Couldn't retrieve price even though isInStock check passed`
+    //   );
+    //   return "-1";
+    // }
+    // const price = srcTxt.replace(/[^0-9,]/g, "");
+    // return price;
   }
 
   @RetryScrapperRun(3, scrapperName)

@@ -65,7 +65,7 @@ const getMainConfig = async (): Promise<IConfig> => {
   return {
     scrappersToRun: [
       { name: "Afm", class_: ScrapperAfm },
-      // { name: "ArtMobile", class_: ScrapperArtMobile },
+      // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
       { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
       { name: "GsmForsage", class_: ScrapperGsmForsage },
@@ -173,7 +173,7 @@ const getDevConfig = async (): Promise<IConfig> => {
     scrappersToRun: [
       // { name: "Afm", class_: ScrapperAfm },
       // { name: "AllSpares", class_: ScrapperAllSpares },
-      // { name: "ArtMobile", class_: ScrapperArtMobile },
+      // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
       // { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
       // { name: "Uptel", class_: ScrapperUptel },
@@ -206,7 +206,7 @@ const getLocalConfig = (): IConfig => {
   return {
     scrappersToRun: [
       // { name: "Afm", class_: ScrapperAfm },
-      // { name: "ArtMobile", class_: ScrapperArtMobile },
+      // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
       // { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
       // { name: "Uptel", class_: ScrapperUptel },
