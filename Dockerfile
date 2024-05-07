@@ -14,4 +14,4 @@ RUN npm i --omit=dev
 
 COPY --from=ts-compiler /usr/app/out/ ./out/
 
-CMD ["timeout", "-k", "5m", "12h", "node", "out/main.js"]
+CMD ["timeout", "-k", "5m", "6h", "node", "out/main.js"]
