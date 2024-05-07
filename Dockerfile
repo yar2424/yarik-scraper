@@ -1,13 +1,13 @@
-FROM node:16.17-alpine as ts-compiler
+FROM node:alpine as ts-compiler
 WORKDIR /usr/app
 COPY package.json .
 COPY tsconfig.json .
-RUN npm install
+RUN npm install --omit=prod
 COPY . .
 RUN npm run build
 
 
-FROM ghcr.io/puppeteer/puppeteer:19.4.1
+FROM ghcr.io/puppeteer/puppeteer:latest
 
 COPY package.json package.json
 RUN npm i --omit=dev
