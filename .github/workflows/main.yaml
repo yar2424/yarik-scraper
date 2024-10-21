@@ -29,7 +29,7 @@ jobs:
           registry-type: public
 
       - name: Inspect registry ouput
-        run: echo "Registry: ${{ steps.login-ecr-public.outputs.registry }}"
+        run: echo "Registry = ${{ steps.login-ecr-public.outputs.registry }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
