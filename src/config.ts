@@ -1,9 +1,6 @@
 import { ScrapperAfm } from "./scrappers/scrapperAfm.js";
-import { ScrapperAllSpares } from "./scrappers/scrapperAllSpares.js";
-import { ScrapperDisplayko } from "./scrappers/scrapperDisplayko.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
 import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
-import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
 import { ScrapperWelcomeMobi } from "./scrappers/scrapperWelcomeMobi.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
@@ -68,11 +65,11 @@ const getMainConfig = async (): Promise<IConfig> => {
       // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
       { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
-      { name: "GsmForsage", class_: ScrapperGsmForsage },
-      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
-      { name: "Displayko", class_: ScrapperDisplayko },
-      { name: "Uptel", class_: ScrapperUptel },
-      { name: "AllSpares", class_: ScrapperAllSpares },
+      // { name: "GsmForsage", class_: ScrapperGsmForsage },
+      // { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      // { name: "Displayko", class_: ScrapperDisplayko },
+      // { name: "Uptel", class_: ScrapperUptel },
+      // { name: "AllSpares", class_: ScrapperAllSpares },
     ],
     schedule: [
       // displays - mobile phones
