@@ -5,6 +5,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { config } from "./config";
 import { IItem } from "./crmXmlHelper";
 import { Shop } from "./types";
 
@@ -25,8 +26,8 @@ export class OutputXmlHelper {
   shopFieldNamesMappings: { [key in Shop]: string[] };
 
   constructor(
-    public xmlS3Bucket = "parser-yarik",
-    public xmlS3Key = "parsing-results/outputXml.xml",
+    public xmlS3Bucket = "yarik-scraper",
+    public xmlS3Key = config.outputFileKey,
     public xmlItems: IOutputXmlItem[] = []
   ) {
     this.shopFieldNamesMappings = {
