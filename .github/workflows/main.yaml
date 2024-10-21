@@ -28,7 +28,7 @@ jobs:
         with:
           registry-type: public
 
-      - name: Dump all outputs from login-ecr step
+      - name: Inspect registry ouput
         run: echo "Registry: ${{ steps.login-ecr-public.outputs.registry }}"
 
       - name: Set up Docker Buildx
