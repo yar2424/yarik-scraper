@@ -1,6 +1,9 @@
 import { ScrapperAfm } from "./scrappers/scrapperAfm.js";
+import { ScrapperAllSpares } from "./scrappers/scrapperAllSpares.js";
+import { ScrapperDisplayko } from "./scrappers/scrapperDisplayko.js";
 import { ScrapperFlatCable } from "./scrappers/scrapperFlatCable.js";
 import { ScrapperGsmForsage } from "./scrappers/scrapperGsmForsage.js";
+import { ScrapperUptel } from "./scrappers/scrapperUptel.js";
 import { ScrapperWelcomeMobi } from "./scrappers/scrapperWelcomeMobi.js";
 import { IScheduleItemp, IScrappersInfo } from "./types";
 
