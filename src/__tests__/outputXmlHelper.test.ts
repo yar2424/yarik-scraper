@@ -13,7 +13,7 @@ test("XmlOutputHelper is getting properly populated", () => {
 
 test("Empty xmlItems array is created if specified s3 object doesn't exist", async () => {
   const outputXmlHelper = new OutputXmlHelper(
-    "parser-yarik",
+    "yarik-scraper",
     "parsing-results/this-file-does-not-exist.xml"
   );
   await outputXmlHelper.loadXmlFromS3();
@@ -26,7 +26,7 @@ describe("addMissingFields methos tests", () => {
   beforeEach(() => {
     // populate almost empty outputXmlHelper
     outputXmlHelper = new OutputXmlHelper(
-      "parser-yarik",
+      "yarik-scraper",
       "parsing-results/this-file-does-not-exist.xml"
     );
     outputXmlHelper.xmlItems = [{ code: "code", name: "name", stock_am: "ok" }];

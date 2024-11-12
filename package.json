@@ -21,7 +21,7 @@
     "axios": "^1.2.1",
     "fast-xml-parser": "^4.0.12",
     "p-limit": "^4.0.0",
-    "puppeteer": "latest",
+    "puppeteer": "^23.6.1",
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-stealth": "^2.11.1"
   }

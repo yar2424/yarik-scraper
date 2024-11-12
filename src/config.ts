@@ -15,6 +15,7 @@ interface IConfig {
   schedule: IScheduleItemp[];
   outputFileKey: string;
   shopsCredentials: IShopsCredentials;
+  itemIDsPath: string;
 }
 
 interface IShopsCredentials {
@@ -74,6 +75,7 @@ const getMainConfig = async (): Promise<IConfig> => {
       { name: "Uptel", class_: ScrapperUptel },
       { name: "AllSpares", class_: ScrapperAllSpares },
     ],
+    itemIDsPath: "/dynamic_items_ids.txt",
     schedule: [
       // displays - mobile phones
       {
@@ -166,20 +168,21 @@ const getMainConfig = async (): Promise<IConfig> => {
 
 const getDevConfig = async (): Promise<IConfig> => {
   const shopsCredentials = await getShopsCredentialsFromS3(
-    "parser-yarik",
+    "yarik-scraper",
     "shopsCredentials.json"
   );
   return {
     scrappersToRun: [
-      // { name: "Afm", class_: ScrapperAfm },
+      { name: "Afm", class_: ScrapperAfm },
       // { name: "AllSpares", class_: ScrapperAllSpares },
       // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
       // { name: "FlatCable", class_: ScrapperFlatCable },
       // { name: "TPlus", class_: ScrapperTPlus },
       // { name: "Uptel", class_: ScrapperUptel },
-      { name: "GsmForsage", class_: ScrapperGsmForsage },
+      // { name: "GsmForsage", class_: ScrapperGsmForsage },
       // { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
     ],
+    itemIDsPath: "/dynamic_items_ids.txt",
     schedule: [
       {
         categoryId: 54,
@@ -193,6 +196,34 @@ const getDevConfig = async (): Promise<IConfig> => {
       // },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
+    shopsCredentials,
+  };
+};
+
+const getDynConfig = async (): Promise<IConfig> => {
+  const shopsCredentials = await getShopsCredentialsFromS3(
+    "yarik-scraper",
+    "shopsCredentials.json"
+  );
+  return {
+    scrappersToRun: [
+      { name: "Afm", class_: ScrapperAfm },
+      // { name: "ArtMobile", class_: ScrapperArtMobile }, // not functional
+      { name: "FlatCable", class_: ScrapperFlatCable },
+      // { name: "TPlus", class_: ScrapperTPlus },
+      { name: "GsmForsage", class_: ScrapperGsmForsage },
+      { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
+      { name: "Displayko", class_: ScrapperDisplayko },
+      { name: "Uptel", class_: ScrapperUptel },
+      //{ name: "AllSpares", class_: ScrapperAllSpares },
+    ],
+    itemIDsPath: "/opt/yc/dynamic_items_ids.txt",
+    schedule: [{
+      categoryId: 54,
+      startDate: new Date("2023-01-10"),
+      intervalInDays: 1,
+    }], 
+    outputFileKey: "scraping-results/testoutputXml.xml",
     shopsCredentials,
   };
 };
@@ -214,6 +245,7 @@ const getLocalConfig = (): IConfig => {
       { name: "WelcomeMobi", class_: ScrapperWelcomeMobi },
       // { name: "AllSpares", class_: ScrapperAllSpares },
     ],
+    itemIDsPath: "/opt/yc/dynamic_items_ids.txt",
     schedule: [
       // {
       //   categoryId: 54,
@@ -227,8 +259,7 @@ const getLocalConfig = (): IConfig => {
       },
     ],
     outputFileKey: "parsing-results/outputXml.xml",
-    shopsCredentials: getLocalCredentials(
-      "/Users/philip/Documents/projects/parser/src/shopsCredentials.json"
+    shopsCredentials: getLocalCredentials(      "/shopsCredentials.json"
     ),
   };
 };
@@ -243,6 +274,8 @@ export const instantiateConfig = async () => {
     config = await getMainConfig();
   } else if (process.env.NODE_ENV === "dev") {
     config = await getDevConfig();
+  }else if (process.env.NODE_ENV === "dynamic") {
+      config = await getDynConfig();
   } else {
     config = getLocalConfig();
   }
