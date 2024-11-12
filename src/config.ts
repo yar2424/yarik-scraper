@@ -223,7 +223,7 @@ const getDynConfig = async (): Promise<IConfig> => {
       startDate: new Date("2023-01-10"),
       intervalInDays: 1,
     }], 
-    outputFileKey: "scraping-results/testoutputXml.xml",
+    outputFileKey: "scraping-results/outputXml.xml",
     shopsCredentials,
   };
 };
