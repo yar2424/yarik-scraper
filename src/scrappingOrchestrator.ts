@@ -2,18 +2,9 @@ import { config } from "./config";
 import { InputXmlHelper } from "./crmXmlHelper.js";
 import { OutputXmlHelper } from "./outputXmlHelper.js";
 
-export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
-  const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();
-  const itemsToScrap =
-    inputXmlHelper.getItemsThatAreChildrenOfCategories(categoriesIds);
-
+async function runScrappers(itemsToScrap: any[], context: string) {
   console.log(
-    `Will be running scrappers for ${categoriesIds.length} categories: ${categoriesIds}`
-  );
-  console.log(
-    `Will be running scrappers for ${
-      itemsToScrap.length
-    } items: ${itemsToScrap.map((el) =>
+    `Will be running scrappers for ${itemsToScrap.length} ${context}: ${itemsToScrap.map((el) =>
       JSON.stringify({
         category: el["g:product_category"],
         mpn: el["g:mpn"],
@@ -49,4 +40,20 @@ export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
     await outputXmlHelper.uploadXMLToS3();
     await outputXmlHelper.uploadXMLToS3InParts(800);
   }
+}
+
+export async function runScrappersForCategoriesIds(categoriesIds: number[]) {
+  const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();
+  const itemsToScrap = inputXmlHelper.getItemsThatAreChildrenOfCategories(categoriesIds);
+
+  console.log(`Will be running scrappers for ${categoriesIds.length} categories: ${categoriesIds}`);
+  await runScrappers(itemsToScrap, "categories");
+}
+
+export async function runScrappersForItemsIds(itemIds: string[]) {
+  const inputXmlHelper = await InputXmlHelper.instantiateWithCrmData();
+  const itemsToScrap = inputXmlHelper.getItemsByIds(itemIds);
+
+  console.log(`Will be running scrappers for ${itemIds.length} items: ${itemIds}`);
+  await runScrappers(itemsToScrap, "items");
 }

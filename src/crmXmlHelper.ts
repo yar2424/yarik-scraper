@@ -28,6 +28,10 @@ export class InputXmlHelper {
   getAllItems() {
     return this.itemsHelper.items;
   }
+  getItemsByIds(ids: string[]){
+    return this.itemsHelper.getItemsByItemIds(ids);
+  }
+
 
   getItemsByCategoriesIds(ids: number[]) {
     return this.itemsHelper.getItemsByCategoriesIds(ids);
@@ -102,7 +106,7 @@ export interface IItem {
   "g:product_category_name": string;
   "g:breadcrumbs": string;
   "g:brand": string;
-  "g:mpn": string | number;
+  "g:mpn": string;
   Ssilkaartmobile: string;
   ssilkatekhno33: string;
   ssilkaAFM: string;
@@ -120,6 +124,12 @@ export class ItemsHelper {
   getItemsByCategoriesIds(ids: number[]): IItem[] {
     return this.items.filter((item) =>
       ids.includes(item["g:product_category"])
+    );
+  }
+
+  getItemsByItemIds(ids: string[]): IItem[] {
+    return this.items.filter((item) =>
+      ids.includes(item["g:mpn"].toString())
     );
   }
 }
