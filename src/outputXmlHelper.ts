@@ -10,7 +10,7 @@ import { IItem } from "./crmXmlHelper";
 import { Shop } from "./types";
 
 const s3ClientConfig = {
-  region: "eu-central-1",
+  region: "eu-north-1",
 };
 const s3Client = new S3Client(s3ClientConfig);
 
@@ -26,7 +26,7 @@ export class OutputXmlHelper {
   shopFieldNamesMappings: { [key in Shop]: string[] };
 
   constructor(
-    public xmlS3Bucket = "yarik-scraper",
+    public xmlS3Bucket = "yarik-scraper01",
     public xmlS3Key = config.outputFileKey,
     public xmlItems: IOutputXmlItem[] = []
   ) {
