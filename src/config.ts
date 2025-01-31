@@ -44,7 +44,7 @@ const getShopsCredentialsFromS3 = async (bucket: string, fileKey: string) => {
   };
   try {
     const s3ClientConfig = {
-      region: "eu-central-1",
+      region: "eu-north-1",
     };
     const s3Client = new S3Client(s3ClientConfig);
     const data = await s3Client.send(new GetObjectCommand(objectInfo));
