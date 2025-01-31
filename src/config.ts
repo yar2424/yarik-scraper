@@ -60,7 +60,7 @@ const getShopsCredentialsFromS3 = async (bucket: string, fileKey: string) => {
 
 const getMainConfig = async (): Promise<IConfig> => {
   const shopsCredentials = await getShopsCredentialsFromS3(
-    "yarik-scraper",
+    "yarik-scraper01",
     "shopsCredentials.json"
   );
   return {
@@ -168,7 +168,7 @@ const getMainConfig = async (): Promise<IConfig> => {
 
 const getDevConfig = async (): Promise<IConfig> => {
   const shopsCredentials = await getShopsCredentialsFromS3(
-    "yarik-scraper",
+    "yarik-scraper01",
     "shopsCredentials.json"
   );
   return {
@@ -202,7 +202,7 @@ const getDevConfig = async (): Promise<IConfig> => {
 
 const getDynConfig = async (): Promise<IConfig> => {
   const shopsCredentials = await getShopsCredentialsFromS3(
-    "yarik-scraper",
+    "yarik-scraper01",
     "shopsCredentials.json"
   );
   return {
