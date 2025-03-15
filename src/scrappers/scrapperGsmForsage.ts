@@ -125,7 +125,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
 
   async isInStock(page: Page) {
     const stockSelector = await page.waitForSelector(
-      "xpath//html/body/div[2]/main/div[2]/div[1]/div[2]/div[3]"
+      "xpath//html/body/div[2]/main/div[2]/div[1]/div[3]/div[3]"
     );
     const stockValue = await stockSelector?.evaluate((el) =>
       el.getAttribute("class")
@@ -146,7 +146,7 @@ export class ScrapperGsmForsage extends BaseScrapper<IItemGsmForsage> {
 
   async getPriceFromPage(page: Page) {
     const el = await page.waitForSelector(
-      "xpath//html/body/div[2]/main/div[2]/div[1]/div[3]/div[1]/div/span[2]/span[1]/span[2]/span"
+      "xpath//html/body/div[2]/main/div[2]/div[1]/div[4]/div[1]/div/span[2]/span[1]/span[2]/span"
     );
     if (el === null) {
       console.log("CRITICAL Failed to scrap price");
