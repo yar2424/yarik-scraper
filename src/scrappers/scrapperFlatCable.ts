@@ -140,7 +140,7 @@ export class ScrapperFlatCable extends BaseScrapper<IItemFlatCable> {
       console.log("CRITICAL Failed to scrap price");
       return "-1";
     }
-    const price = srcTxt.replace(/[^0-9]/g, "");
+    const price = srcTxt.replace(/[^0-9.]/g, "").replace(/\.(?=.*\.)/g, "");
     return price;
   }
 
